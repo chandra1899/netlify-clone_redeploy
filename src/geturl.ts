@@ -1,7 +1,7 @@
 
-export const updatestatus =async (id : string) => {
+export const getUrl =async (id : string) => {
     try {
-        await fetch('http://localhost:8000/api/updatestatus',{
+        let res = await fetch('http://localhost:8000/api/geturl',{
             method:'POST',
             headers:{
               'Access-Control-Allow-Origin': '*',
@@ -10,10 +10,14 @@ export const updatestatus =async (id : string) => {
             },
             credentials:'include',
             body:JSON.stringify({
-                status : "uploaded",
                 deploymentId : id
             })
           })
+          if(res.status === 200){
+            let data = await res.json()
+            console.log(data);
+            return data.repoUrl            
+          }
     } catch (error) {
         console.log("error", error);
         
