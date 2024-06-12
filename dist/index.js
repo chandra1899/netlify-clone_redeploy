@@ -12,6 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require('dotenv').config();
+// import { createClient, commandOptions } from "redis";
 const parsefile_1 = require("./parsefile");
 const ioredis_1 = __importDefault(require("ioredis"));
 const geturl_1 = require("./geturl");
@@ -21,6 +23,10 @@ const getAllFiles_1 = require("./getAllFiles");
 const updatestatus_1 = require("./updatestatus");
 const aws_1 = require("./aws");
 const deleteFolder_1 = require("./deleteFolder");
+// const publisher = createClient()
+// publisher.connect()
+// const subscriber = createClient()
+// subscriber.connect()
 const publisher = new ioredis_1.default({
     host: process.env.REDIS_HOST,
     port: parseInt(process.env.REDIS_PORT),
@@ -53,9 +59,9 @@ function main() {
             yield Promise.all(allPromises);
             //update status
             yield (0, updatestatus_1.updatestatus)(id, "uploaded");
-            console.log("deleting files");
+            // console.log("deleting files");
             yield (0, deleteFolder_1.deleteFolder)(path_1.default.join(__dirname, `output/${id}`));
-            console.log("deleted all files");
+            // console.log("deleted all files");
             yield publisher.lpush("build-queue", id);
             yield publisher.hset("status", id, "uploaded...");
         }

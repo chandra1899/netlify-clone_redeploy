@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUrl = void 0;
 const getUrl = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let res = yield fetch('http://localhost:8000/api/geturl', {
+        let res = yield fetch(`${process.env.NEXTJS_BACKEND_URL}/api/geturl`, {
             method: 'POST',
             headers: {
                 'Access-Control-Allow-Origin': '*',

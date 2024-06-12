@@ -1,4 +1,5 @@
-import { createClient, commandOptions } from "redis";
+require('dotenv').config()
+// import { createClient, commandOptions } from "redis";
 import { parseFile } from "./parsefile";
 import Redis from 'ioredis'
 import { getUrl } from "./geturl";
@@ -8,6 +9,10 @@ import { getAllFiles } from "./getAllFiles";
 import { updatestatus } from "./updatestatus";
 import { uploadFile } from "./aws";
 import { deleteFolder } from "./deleteFolder";
+// const publisher = createClient()
+// publisher.connect()
+// const subscriber = createClient()
+// subscriber.connect()
 const publisher = new Redis({
     host : process.env.REDIS_HOST as string,
     port : parseInt(process.env.REDIS_PORT as string) as number,
@@ -45,11 +50,11 @@ async function main () {
 
             //update status
             await updatestatus(id, "uploaded")
-            console.log("deleting files");
+            // console.log("deleting files");
             
             await deleteFolder(path.join(__dirname, `output/${id}`))
             
-            console.log("deleted all files");
+            // console.log("deleted all files");
             await publisher.lpush("build-queue", id)
             await publisher.hset("status", id, "uploaded...")
     }

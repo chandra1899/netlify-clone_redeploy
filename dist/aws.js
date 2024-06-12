@@ -21,12 +21,17 @@ const s3 = new aws_sdk_1.S3({
     endpoint: process.env.AWS_ENDPOINT
 });
 const uploadFile = (fileName, localFilePath) => __awaiter(void 0, void 0, void 0, function* () {
-    const fileContent = fs_1.default.readFileSync(localFilePath);
-    const response = yield s3.upload({
-        Body: fileContent,
-        Bucket: "vercel",
-        Key: fileName,
-    }).promise();
-    console.log(response);
+    try {
+        const fileContent = fs_1.default.readFileSync(localFilePath);
+        const response = yield s3.upload({
+            Body: fileContent,
+            Bucket: "vercel",
+            Key: fileName,
+        }).promise();
+        // console.log(response);
+    }
+    catch (error) {
+        console.log("error in uploadfile", error);
+    }
 });
 exports.uploadFile = uploadFile;

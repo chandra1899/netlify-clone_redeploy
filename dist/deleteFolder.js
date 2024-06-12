@@ -7,17 +7,22 @@ exports.deleteFolder = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const deleteFolder = (directoryPath) => {
-    if (fs_1.default.existsSync(directoryPath)) {
-        fs_1.default.readdirSync(directoryPath).forEach((file) => {
-            const currentPath = path_1.default.join(directoryPath, file);
-            if (fs_1.default.lstatSync(currentPath).isDirectory()) {
-                (0, exports.deleteFolder)(currentPath);
-            }
-            else {
-                fs_1.default.unlinkSync(currentPath);
-            }
-        });
-        fs_1.default.rmdirSync(directoryPath);
+    try {
+        if (fs_1.default.existsSync(directoryPath)) {
+            fs_1.default.readdirSync(directoryPath).forEach((file) => {
+                const currentPath = path_1.default.join(directoryPath, file);
+                if (fs_1.default.lstatSync(currentPath).isDirectory()) {
+                    (0, exports.deleteFolder)(currentPath);
+                }
+                else {
+                    fs_1.default.unlinkSync(currentPath);
+                }
+            });
+            fs_1.default.rmdirSync(directoryPath);
+        }
+    }
+    catch (error) {
+        console.log("error in deleting files", error);
     }
 };
 exports.deleteFolder = deleteFolder;
