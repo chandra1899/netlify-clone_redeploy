@@ -20,6 +20,7 @@ const path_1 = __importDefault(require("path"));
 const getAllFiles_1 = require("./getAllFiles");
 const updatestatus_1 = require("./updatestatus");
 const aws_1 = require("./aws");
+const deleteFolder_1 = require("./deleteFolder");
 const subscriber = (0, redis_1.createClient)();
 subscriber.connect();
 const publisher = (0, redis_1.createClient)();
@@ -31,6 +32,7 @@ function main() {
             // @ts-ignore
             const id = res.element;
             console.log(id);
+            yield (0, updatestatus_1.updatestatus)(id, "uploading");
             publisher.hSet("status", id, "uploading...");
             const repoUrl = yield (0, geturl_1.getUrl)(id);
             yield (0, simple_git_1.default)().clone(repoUrl, path_1.default.join(__dirname, `output/${id}`));
@@ -41,7 +43,9 @@ function main() {
             }));
             yield Promise.all(allPromises);
             //update status
-            yield (0, updatestatus_1.updatestatus)(id);
+            yield (0, updatestatus_1.updatestatus)(id, "uploaded");
+            console.log("deleting files");
+            yield (0, deleteFolder_1.deleteFolder)(path_1.default.join(__dirname, `output/${id}`));
             publisher.lPush("build-queue", id);
             publisher.hSet("status", id, "uploaded...");
         }

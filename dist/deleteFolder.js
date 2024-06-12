@@ -8,26 +8,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatestatus = void 0;
-const updatestatus = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield fetch('http://localhost:8000/api/updatestatus', {
-            method: 'POST',
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-                status: status,
-                deploymentId: id
-            })
+exports.deleteFolder = void 0;
+const fs_1 = __importDefault(require("fs"));
+const deleteFolder = (folderPath) => {
+    return new Promise((resolve) => __awaiter(void 0, void 0, void 0, function* () {
+        fs_1.default.rm(folderPath, { recursive: true, force: true }, (err) => {
+            if (err) {
+                console.error(`Error deleting folder: ${err.message}`);
+            }
+            else {
+                console.log(`Folder deleted successfully`);
+                resolve("");
+            }
         });
-    }
-    catch (error) {
-        console.log("error", error);
-    }
-});
-exports.updatestatus = updatestatus;
+    }));
+};
+exports.deleteFolder = deleteFolder;

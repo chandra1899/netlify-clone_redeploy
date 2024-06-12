@@ -1,5 +1,5 @@
 
-export const updatestatus =async (id : string) => {
+export const updatestatus =async (id : string, status : string) => {
     try {
         await fetch('http://localhost:8000/api/updatestatus',{
             method:'POST',
@@ -10,7 +10,7 @@ export const updatestatus =async (id : string) => {
             },
             credentials:'include',
             body:JSON.stringify({
-                status : "uploaded",
+                status : status,
                 deploymentId : id
             })
           })

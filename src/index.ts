@@ -6,6 +6,7 @@ import path from "path"
 import { getAllFiles } from "./getAllFiles";
 import { updatestatus } from "./updatestatus";
 import { uploadFile } from "./aws";
+import { deleteFolder } from "./deleteFolder";
 const subscriber = createClient()
 subscriber.connect()
 const publisher = createClient()
@@ -21,7 +22,7 @@ async function main () {
             // @ts-ignore
             const id = res.element
             console.log(id);
-            
+            await updatestatus(id, "uploading")
             publisher.hSet("status", id, "uploading...")
             const repoUrl = await getUrl(id) as string
             await simpleGit().clone(repoUrl, path.join(__dirname, `output/${id}`));
@@ -36,7 +37,10 @@ async function main () {
             await Promise.all(allPromises)
 
             //update status
-            await updatestatus(id)
+            await updatestatus(id, "uploaded")
+            console.log("deleting files");
+            
+            await deleteFolder(path.join(__dirname, `output/${id}`))
 
             publisher.lPush("build-queue", id)
             publisher.hSet("status", id, "uploaded...")
